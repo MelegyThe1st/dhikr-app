@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#007AFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>تطبيق التسبيح الإسلامي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-gray: #8E8E93;
+            --ios-light-gray: #F2F2F7;
+            --ios-dark-gray: #1C1C1E;
+            --dark-text: #FFFFFF;
+            --dark-secondary: #E5E5EA;
+            --dark-background: #1C1C1E;
+            --dark-surface: #2C2C2E;
+            --ios-gradient-start: #007AFF;
+            --ios-gradient-end: #5856D6;
+            --ios-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --ios-hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: 'Amiri', serif;
+            background-color: var(--ios-light-gray);
+            transition: all 0.3s ease;
+            color: var(--ios-dark-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dark body {
+            background-color: var(--dark-background);
+            color: var(--dark-text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--ios-dark-gray);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, var(--ios-gradient-start), var(--ios-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .app-title {
+            color: var(--dark-text);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dhikr-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2.5rem;
+            border-radius: 40px;
+            background: linear-gradient(135deg, var(--ios-gradient-start), var(--ios-gradient-end));
+            box-shadow: var(--ios-shadow);
+            position: relative;
+            overflow: hidden;
+            width: 98%;
+            max-width: 800px;
+            margin: 0 auto;
+            cursor: pointer;
+            transform-origin: center;
+        }
+        
+        .dhikr-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .dhikr-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--ios-hover-shadow);
+        }
+        
+        .dhikr-button:active {
+            transform: scale(0.98);
+        }
+        
+        .dhikr-button:active::before {
+            opacity: 1;
+        }
+        
+        .dhikr-text {
+            font-size: 2.2rem;
+            line-height: 2;
+            white-space: pre-wrap;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: 0 1rem;
+            transition: all 0.3s ease;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .counter {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ios-blue);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, var(--ios-gradient-start), var(--ios-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .dark .counter {
+            color: #64B5F6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .reset-button {
+            background: linear-gradient(135deg, var(--ios-gradient-start), var(--ios-gradient-end));
+            color: white;
+            border-radius: 20px;
+            padding: 0.9rem 1.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--ios-shadow);
+            margin-top: 1rem;
+        }
+        
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--ios-hover-shadow);
+        }
+        
+        .reset-button:active {
+            transform: scale(0.98);
+        }
+        
+        .dark .reset-button {
+            background: linear-gradient(135deg, #64B5F6, #5856D6);
+        }
+        
+        .sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: -4px 0 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .sidebar {
+            background: var(--dark-surface);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--dark-text);
+        }
+        
+        .dhikr-item {
+            transition: all 0.3s ease;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--ios-dark-gray);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dhikr-item:hover {
+            transform: translateX(-4px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dark .dhikr-item {
+            background: rgba(44, 44, 46, 0.8);
+            color: var(--dark-text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dark .dhikr-item:hover {
+            background: rgba(44, 44, 46, 0.9);
+        }
+        
+        .dhikr-item.completed {
+            background: rgba(0, 122, 255, 0.1);
+            border-color: rgba(0, 122, 255, 0.2);
+        }
+        
+        .dark .dhikr-item.completed {
+            background: rgba(0, 122, 255, 0.2);
+            border-color: rgba(0, 122, 255, 0.3);
+        }
+        
+        .checkmark {
+            color: var(--ios-blue);
+            font-size: 1.2rem;
+            margin-right: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .dark .checkmark {
+            color: #64B5F6;
+        }
+        
+        .dhikr-item.completed .checkmark {
+            opacity: 1;
+        }
+        
+        .cycle-count {
+            font-size: 0.9rem;
+            color: var(--ios-gray);
+            margin-right: 4px;
+        }
+        
+        .dark .cycle-count {
+            color: var(--dark-secondary);
+        }
+        
+        .completion-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            max-width: 90%;
+            width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .completion-message {
+            background: var(--dark-surface);
+            color: var(--dark-text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .completion-message h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: var(--ios-dark-gray);
+        }
+        
+        .dark .completion-message h2 {
+            color: var(--dark-text);
+        }
+        
+        .completion-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .completion-button {
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: var(--ios-shadow);
+        }
+        
+        .continue-button {
+            background: linear-gradient(135deg, var(--ios-gradient-start), var(--ios-gradient-end));
+            color: white;
+        }
+        
+        .reset-button {
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
+            color: white;
+        }
+        
+        .dark .continue-button {
+            background: linear-gradient(135deg, #64B5F6, #5856D6);
+        }
+        
+        .dark .reset-button {
+            background: linear-gradient(135deg, #FF453A, #FF9F0A);
+        }
+        
+        .completion-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--ios-hover-shadow);
+        }
+        
+        .completion-button:active {
+            transform: scale(0.98);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .app-title {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .dhikr-button {
+                min-height: 200px;
+                padding: 2rem;
+                border-radius: 30px;
+                touch-action: manipulation;
+            }
+            
+            .dhikr-text {
+                font-size: 1.8rem;
+                line-height: 1.8;
+            }
+            
+            .counter {
+                font-size: 1.4rem;
+            }
+            
+            .completion-message {
+                padding: 2rem;
+                width: 90%;
+            }
+            
+            .completion-message h2 {
+                font-size: 1.8rem;
+            }
+            
+            .completion-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .sidebar {
+                width: 85%;
+                max-width: 300px;
+            }
+
+            .dhikr-item {
+                padding: 0.8rem;
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* تحسينات إضافية للموبايل */
+        @media (hover: none) {
+            .dhikr-button:hover {
+                transform: none;
+            }
+            
+            .dhikr-item:hover {
+                transform: none;
+            }
+        }
+
+        #toggleSidebar, #toggleDarkMode {
+            color: var(--ios-dark-gray);
+        }
+        
+        .dark #toggleSidebar, .dark #toggleDarkMode {
+            color: var(--dark-text);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="app-title">سُبْحَةُ الذِّكْرِ الْمُضَاعَف</h1>
+        <div class="flex justify-between items-center mb-8">
+            <button id="toggleSidebar" class="text-2xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                ☰
+            </button>
+            <button id="toggleDarkMode" class="text-2xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                🌙
+            </button>
+        </div>
+
+        <div class="flex flex-col items-center space-y-8">
+            <div class="dhikr-button w-full max-w-md cursor-pointer" id="dhikrButton">
+                <div class="dhikr-text" id="dhikrText">اِضْغَطْ لِبَدْءِ التَّسْبِيح</div>
+            </div>
+
+            <div class="text-center space-y-4">
+                <div class="text-xl">
+                    عدد التسبيحات الحالية: <span id="currentCount" class="counter">0</span>
+                </div>
+                <div class="text-xl">
+                    المجموع الكلي: <span id="totalCount" class="counter">0</span>
+                </div>
+            </div>
+
+            <button id="resetButton" class="reset-button">
+                إعادة تعيين
+            </button>
+        </div>
+
+        <div class="sidebar fixed top-0 right-0 h-full w-64 p-4 overflow-y-auto">
+            <h2 class="text-xl font-bold mb-4">قائمة الأذكار</h2>
+            <div id="dhikrList" class="space-y-4"></div>
+        </div>
+
+        <div id="completionMessage" class="completion-message hidden">
+            <h2>تَمَّ الانْتِهَاءُ مِنْ جَمِيعِ الأَذْكَارِ، بَارَكَ اللَّهُ فِيكَ، هَل تُرِيدُ الاسْتِمْرار؟</h2>
+            <div class="completion-buttons">
+                <button class="completion-button continue-button" id="continueButton">استمرار</button>
+                <button class="completion-button reset-button" id="resetCompletionButton">رجوع</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const adhkar = [
+            "سُبْحَانَ اللَّهِ",
+            "الْحَمْدُ لِلَّهِ",
+            "اللَّهُ أَكْبَرُ",
+            "لَا إِلَهَ إِلَّا اللَّهُ",
+            "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمُ",
+            "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ مِنْ كُلِّ ذَنْبٍ وَأَتُوبُ إِلَيْهِ",
+            "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+            "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَآلِ إِبْرَاهِيمَ، وَبَارِكْ عَلَى مُحَمَّدٍ وَآلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَآلِ إِبْرَاهِيمَ، فِي الْعَالَمِينَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+            "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ"
+        ];
+
+        const variations = [
+            "عَدَدَ مَا خَلَقَ",
+            "مَلْءِ مَا خَلَقَ",
+            "عَدَدَ مَا فِي الْأَرْضِ وَالسَّمَاءِ",
+            "مَلْءِ مَا فِي الْأَرْضِ وَالسَّمَاءِ",
+            "عَدَدَ مَا أَحْصَى كِتَابَهُ",
+            "مَلْءِ مَا أَحْصَى كِتَابَهُ",
+            "عَدَدَ كُلِّ شَيْءٍ",
+            "مَلْءِ كُلِّ شَيْءٍ"
+        ];
+
+        const specialVariations = [
+            "عَدَدَ مَا خَلَقْتَ",
+            "مَلْءِ مَا خَلَقْتَ",
+            "عَدَدَ مَا فِي الْأَرْضِ وَالسَّمَاءِ",
+            "مَلْءِ مَا فِي الْأَرْضِ وَالسَّمَاءِ",
+            "عَدَدَ مَا أَحْصَى كِتَابَهُ",
+            "مَلْءِ مَا أَحْصَى كِتَابَهُ",
+            "عَدَدَ كُلِّ شَيْءٍ",
+            "مَلْءِ كُلِّ شَيْءٍ"
+        ];
+
+        let currentDhikrIndex = 0;
+        let currentVariationIndex = 0;
+        let currentCount = 0;
+        let totalCount = 0;
+        let isStarted = false;
+        let completedDhikr = new Set();
+        let cycleCounts = new Array(adhkar.length).fill(0);
+        let isCompleted = false;
+
+        const dhikrButton = document.getElementById('dhikrButton');
+        const dhikrText = document.getElementById('dhikrText');
+        const currentCountElement = document.getElementById('currentCount');
+        const totalCountElement = document.getElementById('totalCount');
+        const resetButton = document.getElementById('resetButton');
+        const toggleSidebarButton = document.getElementById('toggleSidebar');
+        const toggleDarkModeButton = document.getElementById('toggleDarkMode');
+        const sidebar = document.querySelector('.sidebar');
+        const dhikrList = document.getElementById('dhikrList');
+        const completionMessage = document.getElementById('completionMessage');
+        const continueButton = document.getElementById('continueButton');
+        const resetCompletionButton = document.getElementById('resetCompletionButton');
+
+        function updateCounters() {
+            currentCountElement.textContent = currentCount;
+            totalCountElement.textContent = totalCount;
+        }
+
+        function updateDhikrList() {
+            dhikrList.innerHTML = adhkar.map((dhikr, index) => `
+                <div class="dhikr-item ${completedDhikr.has(index) ? 'completed' : ''}" onclick="restartDhikr(${index})">
+                    <span class="checkmark">✓</span>
+                    ${cycleCounts[index] > 0 ? `<span class="cycle-count">(${cycleCounts[index]})</span>` : ''}
+                    ${dhikr}
+                </div>
+            `).join('');
+        }
+
+        function showCompletionMessage() {
+            completionMessage.classList.remove('hidden');
+        }
+
+        function hideCompletionMessage() {
+            completionMessage.classList.add('hidden');
+        }
+
+        function restartDhikr(index) {
+            currentDhikrIndex = index;
+            currentVariationIndex = 0;
+            currentCount = 0;
+            isStarted = true;
+            
+            totalCount = totalCount - (currentCount + (cycleCounts[index] * 8));
+            
+            const currentVariations = (index >= 8) ? specialVariations : variations;
+            dhikrText.textContent = `${adhkar[index]}\n${currentVariations[0]}`;
+            updateCounters();
+            updateDhikrList();
+        }
+
+        function cycleDhikr() {
+            if (!isStarted) {
+                isStarted = true;
+                currentDhikrIndex = 0;
+                currentVariationIndex = 0;
+                currentCount = 0;
+            }
+
+            currentCount++;
+            totalCount++;
+
+            if (currentCount >= 8) {
+                currentCount = 0;
+                currentVariationIndex = 0;
+                cycleCounts[currentDhikrIndex]++;
+                completedDhikr.add(currentDhikrIndex);
+                currentDhikrIndex = (currentDhikrIndex + 1) % adhkar.length;
+                
+                // Check if all adhkar are completed and it's the first cycle
+                if (currentDhikrIndex === 0 && !isCompleted && cycleCounts.every(count => count === 1)) {
+                    isCompleted = true;
+                    showCompletionMessage();
+                }
+            }
+
+            const currentVariations = (currentDhikrIndex >= 8) ? specialVariations : variations;
+            const currentVariation = currentVariations[currentVariationIndex];
+            currentVariationIndex = (currentVariationIndex + 1) % currentVariations.length;
+
+            dhikrText.textContent = `${adhkar[currentDhikrIndex]}\n${currentVariation}`;
+            updateCounters();
+            updateDhikrList();
+        }
+
+        function resetCounters() {
+            currentCount = 0;
+            totalCount = 0;
+            currentDhikrIndex = 0;
+            currentVariationIndex = 0;
+            isStarted = false;
+            isCompleted = false;
+            completedDhikr.clear();
+            cycleCounts = new Array(adhkar.length).fill(0);
+            dhikrText.textContent = "اِضْغَطْ لِبَدْءِ التَّسْبِيح";
+            updateCounters();
+            updateDhikrList();
+            hideCompletionMessage();
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            toggleDarkModeButton.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+
+        function continueCounting() {
+            isCompleted = false;
+            hideCompletionMessage();
+        }
+
+        dhikrButton.addEventListener('click', cycleDhikr);
+        resetButton.addEventListener('click', resetCounters);
+        toggleDarkModeButton.addEventListener('click', toggleDarkMode);
+        toggleSidebarButton.addEventListener('click', toggleSidebar);
+        continueButton.addEventListener('click', continueCounting);
+        resetCompletionButton.addEventListener('click', resetCounters);
+
+        // Initialize the app
+        updateDhikrList();
+    </script>
+</body>
+</html> 
